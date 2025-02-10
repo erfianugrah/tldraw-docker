@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  tldraw:
+    image: erfianugrah/tldraw:v1.0.0
+    container_name: tldraw
+    restart: unless-stopped
+    volumes:
+      - /home/erfi/docker-volumes/tldraw/data:/data  # For Caddy data persistence
+      - /home/erfi/docker-volumes/tldraw/config:/config  # For Caddy configuration
+    ports:
+      - "8000:80"  # Expose HTTP port for Caddy
+    environment:
+      - TZ=UTC  # Set your preferred timezone
+    networks:
+      tldraw:
+        ipv4_address: 172.19.1.2
+
+networks:
+  tldraw:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.19.1.0/24
+          gateway: 172.19.1.1
