@@ -7,10 +7,10 @@ services:
     volumes:
       - /home/erfi/docker-volumes/tldraw/data:/data  # For Caddy data persistence
       - /home/erfi/docker-volumes/tldraw/config:/config  # For Caddy configuration
-    ports:
-      - "8000:80"  # Expose HTTP port for Caddy
+    expose:
+      - 80  # Expose HTTP port for Caddy
     environment:
-      - TZ=UTC  # Set your preferred timezone
+      - TZ=Europe/Amsterdam  # Set your preferred timezone
     networks:
       tldraw:
         ipv4_address: 172.19.1.2
