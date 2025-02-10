@@ -13,6 +13,9 @@ RUN npm pkg set dependencies.react="^18.2.0" dependencies.react-dom="^18.2.0"
 RUN npm install tldraw
 RUN npm install
 
+# Update the title in index.html
+RUN sed -i 's/<title>.*<\/title>/<title>TLDraw<\/title>/' index.html
+
 # Create App.jsx with proper line endings
 RUN printf '%s\n' \
 	'import { Tldraw } from "tldraw"' \
