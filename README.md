@@ -1,106 +1,118 @@
-# Docker TLDraw
+# TLDraw Multiplayer Docker Setup Guide
 
-This repository contains a Docker setup for running [tldraw](https://tldraw.com/), an infinite canvas drawing and diagramming tool.
+This guide will help you set up a TLDraw multiplayer application using Docker.
 
-## Features
+## Project Structure
 
-- Multi-architecture support (amd64, arm64, armv7, armv6)
-- Uses Caddy as a web server
-- Minimal production image
-- Easy to deploy with docker-compose
+First, create the following directory structure:
 
-## Quick Start
-
-### Using Docker Compose
-
-1. Create a `docker-compose.yml` file:
-
-```yaml
-version: '3.8'
-services:
-  tldraw:
-    image: erfianugrah/tldraw:v1.0.0
-    container_name: tldraw
-    restart: unless-stopped
-    volumes:
-      - /home/erfi/docker-volumes/tldraw/data:/data  # For Caddy data persistence
-      - /home/erfi/docker-volumes/tldraw/config:/config  # For Caddy configuration
-    ports:
-      - "80:80"  # Expose HTTP port for Caddy
-    environment:
-      - TZ=UTC  # Set your preferred timezone
-    networks:
-      tldraw:
-        ipv4_address: 172.19.1.2
-
-networks:
-  tldraw:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.19.1.0/24
-          gateway: 172.19.1.1
+```
+tldraw-multiplayer/
+├── src/
+│   ├── client/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── index.css
+│   └── server/
+│       ├── server.node.js
+│       ├── rooms.js
+│       ├── assets.js
+│       └── unfurl.js
+├── index.html
+├── package.json
+├── vite.config.js
+├── Dockerfile
+└── docker-compose.yml
 ```
 
-2. Run:
+## Step 1: Copy All Files
+
+Copy the provided files into their respective locations in the directory structure above.
+
+## Step 2: Install Dependencies
+
 ```bash
+npm install
+```
+
+## Step 3: Build and Run with Docker
+
+```bash
+# Create data directories
+mkdir -p data/rooms data/assets
+
+# Build and start the container
 docker-compose up -d
 ```
 
-### Using Docker Run
+## Step 4: Access Your Application
 
-```bash
-docker run -d \
-  --name tldraw \
-  -p 80:80 \
-  -v /path/to/data:/data \
-  -v /path/to/config:/config \
-  erfianugrah/tldraw:v1.0.0
+Open your browser and go to:
+
+```
+http://localhost:5858
 ```
 
-## Building from Source
+To create or join a specific room, add the room ID to the URL path:
 
-1. Clone this repository:
-```bash
-git clone https://github.com/yourusername/docker-tldraw.git
-cd docker-tldraw
+```
+http://localhost:5858/my-room-name
 ```
 
-2. Build the multi-arch image:
+## Development Mode
+
+If you want to develop locally without Docker:
+
 ```bash
-docker buildx build --platform linux/arm64,linux/amd64,linux/arm/v6,linux/arm/v7 -t yourusername/tldraw:v1.0.0 . --push
+# Start both the server and client
+npm run dev
+
+# Access at http://localhost:5173
 ```
 
-## Configuration
+## Troubleshooting
 
-### Volumes
+### Check Server Logs
 
-- `/data`: Caddy data directory for persistence
-- `/config`: Caddy configuration directory
+```bash
+docker-compose logs -f
+```
 
-### Ports
+### Verify Container is Running
 
-- `80`: HTTP port
+```bash
+docker-compose ps
+```
 
-### Environment Variables
+### Check File Permissions
 
-- `TZ`: Timezone (default: UTC)
+If you have issues with data persistence, check that your data directories have the right permissions:
 
-## License
+```bash
+sudo chown -R 1000:1000 data/
+```
 
-This Docker setup is provided under MIT license. However, please note that tldraw itself is licensed under [tldraw license](https://github.com/tldraw/tldraw/blob/main/LICENSE.md).
+### Test Server Directly
 
-## Contributing
+To verify the server is working:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```bash
+curl http://localhost:5858/health
+```
 
-## Support
+Should return: `{"status":"ok"}`
 
-If you encounter any issues with the Docker setup, please open an issue in this repository.
+## Additional Configuration
 
-For tldraw-specific issues, please refer to the [official tldraw repository](https://github.com/tldraw/tldraw).
+### Change Port
 
-## Acknowledgments
+To use a different port, modify `docker-compose.yml`:
 
-- [tldraw](https://github.com/tldraw/tldraw) for the amazing drawing application
-- [Caddy](https://caddyserver.com/) for the web server
+```yaml
+ports:
+  - "8080:5858"  # Change 8080 to your preferred port
+```
+
+### Enable SSL/TLS
+
+For production, you may want to put this behind a reverse proxy like Nginx or Traefik that handles SSL termination.

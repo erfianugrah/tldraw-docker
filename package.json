@@ -1,0 +1,32 @@
+{
+  "name": "tldraw-multiplayer",
+  "description": "TLDraw multiplayer example with Docker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n server,client -c red,blue \"node src/server/server.node.js\" \"vite\"",
+    "build": "vite build",
+    "start": "node src/server/server.node.js"
+  },
+  "dependencies": {
+    "@fastify/cors": "^9.0.1",
+    "@fastify/websocket": "^10.0.1",
+    "@tldraw/sync": "latest",
+    "@tldraw/sync-core": "latest",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "fastify": "^4.28.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.24.1",
+    "tldraw": "latest",
+    "unfurl.js": "^6.4.0",
+    "vite": "^5.4.10",
+    "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "concurrently": "^9.0.1"
+  }
+}

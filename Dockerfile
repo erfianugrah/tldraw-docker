@@ -2,55 +2,40 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Install create-vite and initialize project
-RUN npm create vite@latest app -- --template react
-WORKDIR /app/app
+# Copy package files
+COPY package*.json ./
 
-# Update package.json to use correct React version
-RUN npm pkg set dependencies.react="^18.2.0" dependencies.react-dom="^18.2.0"
-
-# Install tldraw and dependencies
-RUN npm install tldraw
+# Install dependencies
 RUN npm install
 
-# Update the title in index.html
-RUN sed -i 's/<title>.*<\/title>/<title>TLDraw<\/title>/' index.html
+# Copy source code
+COPY . .
 
-# Create App.jsx with proper line endings
-RUN printf '%s\n' \
-	'import { Tldraw } from "tldraw"' \
-	'import "tldraw/tldraw.css"' \
-	'' \
-	'export default function App() {' \
-	'  return (' \
-	'    <div style={{ position: "fixed", inset: 0 }}>' \
-	'      <Tldraw />' \
-	'    </div>' \
-	'  )' \
-	'}' > src/App.jsx
-
-# Build the application
+# Build frontend
 RUN npm run build
 
-# Production stage
-FROM caddy:2-alpine
+# Final stage
+FROM node:18-alpine
 
-# Copy the built files to Caddy's serving directory
-COPY --from=builder /app/app/dist /usr/share/caddy
+WORKDIR /app
 
-# Create a simple Caddyfile
-RUN printf '%s\n' \
-	'{' \
-	'    auto_https off' \
-	'}' \
-	'' \
-	':80 {' \
-	'    root * /usr/share/caddy' \
-	'    file_server' \
-	'    try_files {path} /index.html' \
-	'}' > /etc/caddy/Caddyfile
+# Copy built frontend files
+COPY --from=builder /app/dist ./dist
+# Copy server files
+COPY --from=builder /app/src/server ./server
+COPY --from=builder /app/package*.json ./
 
-# Expose port 80
-EXPOSE 80
+# Install production dependencies
+RUN npm install --production
 
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile"]
+# Create directories for data persistence
+RUN mkdir -p ./.rooms ./.assets
+
+# Create volume mount points
+VOLUME ["/app/.rooms", "/app/.assets"]
+
+# Expose port
+EXPOSE 5858
+
+# Start the server
+CMD ["node", "server/server.node.js"]
