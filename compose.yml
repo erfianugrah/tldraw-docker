@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   tldraw:
-    image: erfianugrah/tldraw:v1.0.23
+    image: erfianugrah/tldraw:v1.1.0
     container_name: tldraw
     restart: unless-stopped
     volumes:
