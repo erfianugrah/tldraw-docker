@@ -1,14 +1,14 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './index.css'
+import './main.css'
+import 'tldraw/tldraw.css'
 
-// Add global error handling
+// Global error handling
 window.addEventListener('error', (event) => {
   console.error('Global error:', event.error)
 })
 
-// Add unhandled promise rejection handling
 window.addEventListener('unhandledrejection', (event) => {
   console.error('Unhandled promise rejection:', event.reason)
 })

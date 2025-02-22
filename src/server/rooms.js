@@ -1,20 +1,42 @@
 import { TLSocketRoom } from "@tldraw/sync-core";
+import {
+  createTLSchema,
+  defaultBindingSchemas,
+  defaultShapeSchemas,
+} from "@tldraw/tlschema";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 
 // For this example we're just saving data to the local filesystem
 const DIR = "./.rooms";
+
+// Create a schema that includes the default shapes and bindings
+const schema = createTLSchema({
+  shapes: defaultShapeSchemas,
+  bindings: defaultBindingSchemas,
+});
+
+// Function to read room snapshot from disk
 async function readSnapshotIfExists(roomId) {
   try {
     const data = await readFile(join(DIR, roomId));
+    console.log(`Successfully read snapshot for room: ${roomId}`);
     return JSON.parse(data.toString()) ?? undefined;
   } catch (e) {
+    console.log(`No existing snapshot found for room: ${roomId}`, e.message);
     return undefined;
   }
 }
+
+// Function to save room snapshot to disk
 async function saveSnapshot(roomId, snapshot) {
-  await mkdir(DIR, { recursive: true });
-  await writeFile(join(DIR, roomId), JSON.stringify(snapshot));
+  try {
+    await mkdir(DIR, { recursive: true });
+    await writeFile(join(DIR, roomId), JSON.stringify(snapshot));
+    console.log(`Successfully saved snapshot for room: ${roomId}`);
+  } catch (e) {
+    console.error(`Error saving snapshot for room: ${roomId}`, e);
+  }
 }
 
 // We'll keep an in-memory map of rooms and their data
@@ -26,53 +48,103 @@ async function saveSnapshot(roomId, snapshot) {
  */
 
 /** @type {Map<string, RoomState>} */
-const rooms = new Map();
+export const rooms = new Map();
 
 // Very simple mutex using promise chaining, to avoid race conditions
 // when loading rooms. In production you probably want one mutex per room
 // to avoid unnecessary blocking!
 let mutex = Promise.resolve(null);
 
+/**
+ * Get or create a TLSocketRoom for a given room ID
+ * @param {string} roomId - The ID of the room to get or create
+ * @returns {Promise<TLSocketRoom>} - The TLSocketRoom instance
+ */
 export async function makeOrLoadRoom(roomId) {
   mutex = mutex
     .then(async () => {
       if (rooms.has(roomId)) {
         const roomState = await rooms.get(roomId);
         if (!roomState.room.isClosed()) {
+          console.log(`Using existing room: ${roomId}`);
           return null; // all good
         }
       }
-      console.log("loading room", roomId);
+      console.log(`Creating/loading room: ${roomId}`);
       const initialSnapshot = await readSnapshotIfExists(roomId);
 
       const roomState = {
         needsPersist: false,
         id: roomId,
         room: new TLSocketRoom({
+          schema, // Pass the schema to ensure proper validation
           initialSnapshot,
           onSessionRemoved(room, args) {
-            console.log("client disconnected", args.sessionId, roomId);
+            console.log(
+              `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}, remainingSessions=${args.numSessionsRemaining}`,
+            );
             if (args.numSessionsRemaining === 0) {
-              console.log("closing room", roomId);
+              console.log(`No clients left, closing room: ${roomId}`);
               room.close();
             }
           },
           onDataChange() {
+            console.log(`Data changed in room: ${roomId}`);
             roomState.needsPersist = true;
           },
         }),
       };
       rooms.set(roomId, roomState);
+      console.log(`Room created/loaded: ${roomId}`);
       return null; // all good
     })
     .catch((error) => {
       // return errors as normal values to avoid stopping the mutex chain
+      console.error(`Error in mutex chain for room: ${roomId}`, error);
       return error;
     });
 
   const err = await mutex;
-  if (err) throw err;
-  return rooms.get(roomId).room;
+  if (err) {
+    console.error(`Error making/loading room: ${roomId}`, err);
+    throw err;
+  }
+
+  const roomState = rooms.get(roomId);
+
+  if (!roomState) {
+    console.error(
+      `Room state not found for room: ${roomId} after mutex operation`,
+    );
+    throw new Error(`Room state not found for room: ${roomId}`);
+  }
+
+  return roomState.room;
+}
+
+/**
+ * Get information about all active rooms
+ * @returns {Array<Object>} - Array of room information objects
+ */
+export function getActiveRooms() {
+  const activeRooms = [];
+  for (const [id, roomState] of rooms.entries()) {
+    // Use getSessions to get all active sessions
+    let activeClients = 0;
+    try {
+      activeClients = roomState.room.getSessions().length;
+    } catch (error) {
+      console.error(`Error getting session count for room ${id}:`, error);
+    }
+
+    activeRooms.push({
+      id,
+      isClosed: roomState.room.isClosed(),
+      needsPersist: roomState.needsPersist,
+      activeClients,
+    });
+  }
+  return activeRooms;
 }
 
 // Do persistence on a regular interval.
