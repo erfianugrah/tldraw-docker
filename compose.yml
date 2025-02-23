@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   tldraw:
-    image: erfianugrah/tldraw:v1.1.0
+    image: erfianugrah/tldraw:v1.1.5
     container_name: tldraw
     restart: unless-stopped
     volumes:
@@ -12,6 +12,7 @@ services:
     environment:
       - TZ=Europe/Amsterdam  # Set your preferred timezone
       - NODE_ENV=production
+      - PORT=5858
     networks:
       tldraw:
         ipv4_address: 172.19.1.2
