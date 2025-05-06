@@ -73,26 +73,34 @@ export async function makeOrLoadRoom(roomId) {
       console.log(`Creating/loading room: ${roomId}`);
       const initialSnapshot = await readSnapshotIfExists(roomId);
 
+      // Create TLSocketRoom instance first
+      const socketRoom = new TLSocketRoom({
+        schema, // Pass the schema to ensure proper validation
+        initialSnapshot,
+        onSessionRemoved(room, args) {
+          console.log(
+            `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}, remainingSessions=${args.numSessionsRemaining}`,
+          );
+          if (args.numSessionsRemaining === 0) {
+            console.log(`No clients left, closing room: ${roomId}`);
+            room.close();
+          }
+        },
+        onDataChange() {
+          console.log(`Data changed in room: ${roomId}`);
+          // Use the rooms Map instead of the not-yet-initialized roomState
+          const state = rooms.get(roomId);
+          if (state) {
+            state.needsPersist = true;
+          }
+        },
+      });
+      
+      // Now create the roomState object
       const roomState = {
         needsPersist: false,
         id: roomId,
-        room: new TLSocketRoom({
-          schema, // Pass the schema to ensure proper validation
-          initialSnapshot,
-          onSessionRemoved(room, args) {
-            console.log(
-              `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}, remainingSessions=${args.numSessionsRemaining}`,
-            );
-            if (args.numSessionsRemaining === 0) {
-              console.log(`No clients left, closing room: ${roomId}`);
-              room.close();
-            }
-          },
-          onDataChange() {
-            console.log(`Data changed in room: ${roomId}`);
-            roomState.needsPersist = true;
-          },
-        }),
+        room: socketRoom,
       };
       rooms.set(roomId, roomState);
       console.log(`Room created/loaded: ${roomId}`);
