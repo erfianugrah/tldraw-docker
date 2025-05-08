@@ -108,12 +108,12 @@ function App() {
       {connectionError && (
         <div
           role="alert"
-          className="error-banner"
+          className="fixed top-0 left-0 right-0 p-3 bg-red-50 text-red-700 border-b border-red-200 text-sm text-center z-[9999]"
         >
           {connectionError}
           <button
             onClick={() => window.location.reload()}
-            className="retry-button"
+            className="ml-3 bg-red-500 text-white border-none rounded px-2 py-1 text-xs cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
             aria-label="Retry connection"
           >
             Retry
@@ -132,14 +132,14 @@ function App() {
 
       {isLoading && (
         <div
-          className="loading-overlay"
+          className="fixed inset-0 bg-white/80 flex items-center justify-center z-[9999]"
           role="progressbar"
           aria-valuetext="Loading drawing board"
           aria-busy="true"
         >
-          <div className="loading-card">
-            <h2 className="loading-title">Connecting to Room...</h2>
-            <p className="loading-text">Setting up drawing board...</p>
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-lg font-bold mb-3">Connecting to Room...</h2>
+            <p className="text-gray-600">Setting up drawing board...</p>
           </div>
         </div>
       )}

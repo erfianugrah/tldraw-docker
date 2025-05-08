@@ -5,7 +5,6 @@ import { useSync } from "@tldraw/sync"
 import { AssetRecordType, getHashForString, Tldraw, uniqueId } from "tldraw"
 import { ArrowLeft, Users } from "lucide-react"
 import { ConfirmModal } from "./components/ConfirmModal"
-import styles from "./styles/TLDrawComponent.module.css"
 
 const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigateToRooms }) => {
   const [showLeaveConfirm, setShowLeaveConfirm] = useState(false)
@@ -93,21 +92,102 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
 
   return (
     <div
-      className={styles.wrapper}
+      className="tldraw-wrapper"
+      style={{ position: "fixed", inset: 0 }}
       role="application"
       aria-label="Drawing canvas"
     >
-      <div className={styles.navigation}>
+      <style>{`
+        .tldraw-wrapper {
+          display: flex;
+          flex-direction: column;
+        }
+
+        .tldraw-navigation {
+          height: 40px;
+          display: flex;
+          align-items: center;
+          padding: 0 8px;
+          background: var(--color-panel);
+          border-bottom: 1px solid var(--color-divider);
+          flex: 0 0 auto;
+          gap: 8px;
+        }
+
+        .tldraw-back-button {
+          background: var(--color-muted-2);
+          border: none;
+          padding: 6px 12px;
+          border-radius: 4px;
+          color: var(--color-text);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          height: 28px;
+          font-weight: 500;
+          transition: all 0.2s ease;
+        }
+
+        .tldraw-back-button:hover {
+          background: var(--color-hover);
+        }
+
+        .tldraw-back-button:active {
+          background: var(--color-muted-1);
+        }
+
+        .tldraw-room-info {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 12px;
+          color: var(--color-text-2);
+          padding: 4px 8px;
+          background: var(--color-muted-1);
+          border-radius: 4px;
+          border: 1px solid var(--color-divider);
+        }
+
+        .tldraw-room-info strong {
+          color: var(--color-text);
+        }
+
+        .tldraw-container {
+          flex: 1;
+          position: relative;
+        }
+
+        .tldraw-container .tlui-layout {
+          top: 0 !important;
+        }
+
+        @media (max-width: 768px) {
+          .tldraw-back-button span {
+            display: none;
+          }
+          
+          .tldraw-room-info {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      `}</style>
+
+      <div className="tldraw-navigation">
         <button
-          onClick={() => setShowLeaveConfirm(true)}
-          className={styles.backButton}
+          onClick={() => setShowLeaveConfirm(true)} // Simply show the modal, no window.confirm
+          className="tldraw-back-button"
           title="Return to room list"
         >
           <ArrowLeft size={16} />
           <span>Back to Rooms</span>
         </button>
 
-        <div className={styles.roomInfo} title={`Current room: ${roomId}`}>
+        <div className="tldraw-room-info" title={`Current room: ${roomId}`}>
           <Users size={14} />
           <span>
             Room: <strong>{roomId}</strong>
@@ -115,7 +195,7 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
         </div>
       </div>
 
-      <div className={styles.container}>
+      <div className="tldraw-container">
         <Tldraw store={store} onMount={handleMount} />
       </div>
 
