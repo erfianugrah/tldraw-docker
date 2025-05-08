@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('tldraw/tldraw.css');
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: none;
+  background-color: #f5f7fa;
+  color: #333;
+  /* Force hardware acceleration for Chrome */
+  transform: translateZ(0);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Make sure TLDraw's UI is visible */
+.tldraw {
+  width: 100%;
+  height: 100%;
+}
+
+/* Fix for toolbar button spacing */
+.tl-toolbar__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure SVG elements scale properly */
+svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Chrome-specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+  html, body, #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .tl-canvas {
+    transform: scale(1);
+  }
+
+  .tl-container {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .tl-toolbar {
+    transform: scale(1);
+  }
+}
+
+/* Loading overlay styling */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.loading-card {
+  background-color: white;
+  padding: 16px 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 300px;
+  width: auto;
+}
+
+.loading-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.loading-text {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Error banner styling */
+.error-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border-bottom: 1px solid #fca5a5;
+  font-size: 14px;
+  text-align: center;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.retry-button {
+  margin-left: 12px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background-color: #dc2626;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}

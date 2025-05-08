@@ -6,9 +6,7 @@ import {
 } from "@tldraw/tlschema";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
-
-// For this example we're just saving data to the local filesystem
-const DIR = "./.rooms";
+import { ROOMS_DIR, ROOM_PERSISTENCE_INTERVAL_MS } from "./config.js";
 
 // Create a schema that includes the default shapes and bindings
 const schema = createTLSchema({
@@ -19,7 +17,7 @@ const schema = createTLSchema({
 // Function to read room snapshot from disk
 async function readSnapshotIfExists(roomId) {
   try {
-    const data = await readFile(join(DIR, roomId));
+    const data = await readFile(join(ROOMS_DIR, roomId));
     console.log(`Successfully read snapshot for room: ${roomId}`);
     return JSON.parse(data.toString()) ?? undefined;
   } catch (e) {
@@ -31,8 +29,8 @@ async function readSnapshotIfExists(roomId) {
 // Function to save room snapshot to disk
 async function saveSnapshot(roomId, snapshot) {
   try {
-    await mkdir(DIR, { recursive: true });
-    await writeFile(join(DIR, roomId), JSON.stringify(snapshot));
+    await mkdir(ROOMS_DIR, { recursive: true });
+    await writeFile(join(ROOMS_DIR, roomId), JSON.stringify(snapshot));
     console.log(`Successfully saved snapshot for room: ${roomId}`);
   } catch (e) {
     console.error(`Error saving snapshot for room: ${roomId}`, e);
@@ -170,4 +168,4 @@ setInterval(() => {
       rooms.delete(roomState.id);
     }
   }
-}, 2000);
+}, ROOM_PERSISTENCE_INTERVAL_MS);

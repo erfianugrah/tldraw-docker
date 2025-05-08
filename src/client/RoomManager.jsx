@@ -179,8 +179,7 @@ const RoomManager = ({ onEnterRoom }) => {
 
         <footer className="footer">
           <p>
-            <strong>Note:</strong> Drawing changes are currently stored locally. Multiplayer sync functionality is
-            coming soon.
+            <strong>Note:</strong> Drawing changes are automatically saved and synced in real-time with other users in the same room.
           </p>
         </footer>
       </div>

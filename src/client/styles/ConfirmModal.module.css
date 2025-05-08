@@ -1,0 +1,92 @@
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  color: #333;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #1a1a1a;
+}
+
+.body {
+  margin-bottom: 20px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #666;
+}
+
+.body p {
+  margin: 0 0 8px 0;
+}
+
+.body p:last-child {
+  margin-bottom: 0;
+}
+
+.body strong {
+  color: #1a1a1a;
+  font-weight: 500;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primaryButton {
+  composes: button;
+  background: #2F80ED;
+  color: white;
+  border: none;
+}
+
+.primaryButton:hover {
+  background: #2B73D5;
+}
+
+.secondaryButton {
+  composes: button;
+  background: none;
+  border: none;
+  color: #666;
+  padding: 6px 8px;
+}
+
+.secondaryButton:hover {
+  color: #1a1a1a;
+}
+
+.button:focus {
+  outline: 2px solid #2F80ED;
+  outline-offset: 2px;
+}

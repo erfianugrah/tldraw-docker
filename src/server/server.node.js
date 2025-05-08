@@ -3,18 +3,24 @@ import { createServer } from "http";
 import express from "express";
 import { join, resolve } from "path";
 import { promises as fs } from "fs";
-import { readdir, readFile } from "fs/promises";
+import { readdir } from "fs/promises";
 import { loadAsset, storeAsset } from "./assets.js";
 import { getActiveRooms, makeOrLoadRoom, rooms } from "./rooms.js";
 import { unfurl } from "./unfurl.js";
 import cors from "cors";
-
-const PORT = process.env.PORT || 5858;
-const ROOMS_DIR = resolve("./.rooms");
+import { PORT, NODE_ENV, IS_PRODUCTION, ROOMS_DIR, CORS_ENABLED, CORS_ORIGIN } from "./config.js";
 
 // Create the Express app
 const app = express();
-app.use(cors());
+
+// Configure middleware
+if (CORS_ENABLED) {
+  app.use(cors({
+    origin: CORS_ORIGIN,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }));
+}
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -115,8 +121,8 @@ app.delete("/api/rooms/:roomId", async (req, res) => {
   }
 });
 
-// Serve static files
-if (process.env.NODE_ENV === "production") {
+// Serve static files in production
+if (IS_PRODUCTION) {
   const distPath = resolve("./dist");
   app.use(express.static(distPath));
 
