@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import "./RoomManager.css"
+import styles from "./styles/RoomManager.module.css"
 
 const RoomManager = ({ onEnterRoom }) => {
   const [newRoomName, setNewRoomName] = useState("")
@@ -61,22 +61,22 @@ const RoomManager = ({ onEnterRoom }) => {
   }
 
   return (
-    <main className="room-manager" role="main">
-      <div className="room-manager-container">
-        <h1>TLDraw Room Management</h1>
+    <main className={styles.roomManager} role="main">
+      <div className={styles.container}>
+        <h1 className={styles.title}>TLDraw Room Management</h1>
 
-        <section className="quick-actions" aria-labelledby="quick-actions-title">
-          <h2 id="quick-actions-title">Quick Access</h2>
-          <div className="button-group">
+        <section className={styles.section} aria-labelledby="quick-actions-title">
+          <h2 id="quick-actions-title" className={styles.sectionTitle}>Quick Access</h2>
+          <div className={styles.buttonGroup}>
             <button
-              className="primary-button"
+              className={styles.primaryButton}
               onClick={() => onEnterRoom(generateRandomRoom())}
               aria-label="Create room with random name"
             >
               Create Random Room
             </button>
             <button
-              className="secondary-button"
+              className={styles.secondaryButton}
               onClick={() => {
                 const roomName = prompt("Enter room name:")
                 if (roomName) {
@@ -98,7 +98,7 @@ const RoomManager = ({ onEnterRoom }) => {
             </button>
           </div>
 
-          <div className="info-box" role="note">
+          <div className={styles.infoBox} role="note">
             <p>You can also access any room directly by adding the room name to the URL:</p>
             <code aria-label="URL format example">
               {window.location.origin}/<strong>your-room-name</strong>
@@ -106,16 +106,17 @@ const RoomManager = ({ onEnterRoom }) => {
           </div>
         </section>
 
-        <section className="create-room" aria-labelledby="create-room-title">
-          <h2 id="create-room-title">Create New Room</h2>
-          <form onSubmit={handleCreateRoom}>
-            <div className="form-group">
+        <section className={styles.section} aria-labelledby="create-room-title">
+          <h2 id="create-room-title" className={styles.sectionTitle}>Create New Room</h2>
+          <form className={styles.form} onSubmit={handleCreateRoom}>
+            <div className={styles.formGroup}>
               <label htmlFor="room-name" className="sr-only">
                 Room name
               </label>
               <input
                 id="room-name"
                 type="text"
+                className={styles.formControl}
                 value={newRoomName}
                 onChange={(e) => setNewRoomName(e.target.value)}
                 placeholder="Enter room name (e.g., team-meeting)"
@@ -123,22 +124,22 @@ const RoomManager = ({ onEnterRoom }) => {
                 aria-describedby="room-name-help"
               />
             </div>
-            <button type="submit" className="primary-button">
+            <button type="submit" className={styles.primaryButton}>
               Create Room
             </button>
           </form>
-          <p id="room-name-help" className="help-text">
+          <p id="room-name-help" className={styles.helpText}>
             Room names should use lowercase letters, numbers, and hyphens. Special characters will be converted to
             hyphens.
           </p>
         </section>
 
         {roomHistory.length > 0 && (
-          <section className="room-history" aria-labelledby="history-title">
-            <div className="header-with-action">
-              <h2 id="history-title">Recently Visited Rooms</h2>
+          <section className={styles.section} aria-labelledby="history-title">
+            <div className={styles.headerWithAction}>
+              <h2 id="history-title" className={styles.sectionTitle}>Recently Visited Rooms</h2>
               <button
-                className="text-button"
+                className={styles.textButton}
                 onClick={() => {
                   if (window.confirm("Clear your room history? This will not delete any rooms.")) {
                     localStorage.removeItem("tldraw-room-history")
@@ -151,21 +152,21 @@ const RoomManager = ({ onEnterRoom }) => {
               </button>
             </div>
 
-            <ul className="room-list" role="list">
+            <ul className={styles.roomList} role="list">
               {roomHistory.map((roomId) => (
-                <li key={roomId} className="room-item">
+                <li key={roomId} className={styles.roomItem}>
                   <button
-                    className="room-button"
+                    className={styles.roomButton}
                     onClick={() => onEnterRoom(roomId)}
                     aria-label={`Enter room ${roomId}`}
                   >
-                    <span className="room-name">{roomId}</span>
-                    <span className="room-action" aria-hidden="true">
+                    <span className={styles.roomName}>{roomId}</span>
+                    <span className={styles.roomAction} aria-hidden="true">
                       Enter Room
                     </span>
                   </button>
                   <button
-                    className="remove-button"
+                    className={styles.removeButton}
                     onClick={(e) => handleRemoveFromHistory(roomId, e)}
                     aria-label={`Remove ${roomId} from history`}
                   >
@@ -177,10 +178,9 @@ const RoomManager = ({ onEnterRoom }) => {
           </section>
         )}
 
-        <footer className="footer">
+        <footer className={styles.footer}>
           <p>
-            <strong>Note:</strong> Drawing changes are currently stored locally. Multiplayer sync functionality is
-            coming soon.
+            <strong>Note:</strong> Drawing changes are automatically saved and synced in real-time with other users in the same room.
           </p>
         </footer>
       </div>

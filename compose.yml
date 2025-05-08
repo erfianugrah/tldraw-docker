@@ -1,21 +1,35 @@
 version: '3.9'
 services:
   tldraw:
-    image: erfianugrah/tldraw:v1.1.8
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: tldraw
     restart: unless-stopped
     volumes:
-      - /home/erfi/docker-volumes/tldraw/data/rooms:/app/.rooms  # For Caddy data persistence
-      - /home/erfi/docker-volumes/tldraw/data/assets:/app/.assets  # For Caddy configuration
+      - tldraw_rooms:/app/.rooms  # Named volume for room data
+      - tldraw_assets:/app/.assets  # Named volume for assets
     ports:
-      - 8000:5858  # Expose HTTP port for Caddy
+      - 8000:5858  # Expose HTTP port
     environment:
       - TZ=Europe/Amsterdam  # Set your preferred timezone
       - NODE_ENV=production
       - PORT=5858
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5858/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
     networks:
       tldraw:
         ipv4_address: 172.19.1.2
+
+volumes:
+  tldraw_rooms:
+    driver: local
+  tldraw_assets:
+    driver: local
 
 networks:
   tldraw:

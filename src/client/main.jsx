@@ -1,8 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App'
-import './main.css'
-import 'tldraw/tldraw.css'
+import './styles/global.css'
 
 // Global error handling
 window.addEventListener('error', (event) => {

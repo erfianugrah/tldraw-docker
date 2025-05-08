@@ -1,0 +1,81 @@
+@import './variables.css';
+
+.wrapper {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.navigation {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  background: var(--color-background-card);
+  border-bottom: 1px solid var(--color-border);
+  flex: 0 0 auto;
+  gap: 8px;
+}
+
+.backButton {
+  background: var(--color-background-section);
+  border: none;
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  height: 28px;
+  font-weight: 500;
+  transition: all var(--transition-speed) ease;
+}
+
+.backButton:hover {
+  background: var(--color-border-light);
+}
+
+.backButton:active {
+  background: var(--color-border);
+}
+
+.roomInfo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  padding: 4px 8px;
+  background: var(--color-background-section);
+  border-radius: var(--border-radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.roomInfo strong {
+  color: var(--color-text-primary);
+}
+
+.container {
+  flex: 1;
+  position: relative;
+}
+
+.container :global(.tlui-layout) {
+  top: 0 !important;
+}
+
+@media (max-width: 768px) {
+  .backButton span {
+    display: none;
+  }
+  
+  .roomInfo {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

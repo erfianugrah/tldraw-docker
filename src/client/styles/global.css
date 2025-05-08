@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+@import url('tldraw/tldraw.css');
+@import './variables.css';
+
+/* Reset and base styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font-family-accent);
+  color: var(--color-text-primary);
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: none;
+  background-color: var(--color-background-main);
+  /* Force hardware acceleration for Chrome */
+  transform: translateZ(0);
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* TLDraw specific fixes */
+.tldraw {
+  width: 100%;
+  height: 100%;
+}
+
+/* Fix for toolbar button spacing */
+.tl-toolbar__buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Ensure SVG elements scale properly */
+svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+/* Chrome-specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+  html, body, #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .tl-canvas {
+    transform: scale(1);
+  }
+
+  .tl-container {
+    max-width: 100%;
+    max-height: 100%;
+  }
+
+  .tl-toolbar {
+    transform: scale(1);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: var(--border-radius-lg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: var(--border-radius-lg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Accessibility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
