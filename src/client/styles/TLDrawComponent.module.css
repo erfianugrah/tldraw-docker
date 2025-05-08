@@ -1,5 +1,3 @@
-@import './variables.css';
-
 .wrapper {
   position: fixed;
   inset: 0;
@@ -11,54 +9,52 @@
   height: 40px;
   display: flex;
   align-items: center;
-  padding: 0 12px;
-  background: var(--color-background-card);
-  border-bottom: 1px solid var(--color-border);
+  padding: 0 16px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   flex: 0 0 auto;
   gap: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  z-index: 10;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .backButton {
+  background: #e2e8f0;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  color: #333333;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 6px 12px;
+  gap: 6px;
   font-size: 13px;
-  font-weight: 500;
-  color: var(--color-text-primary);
-  background-color: var(--color-background-section);
-  border: none;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
   height: 28px;
-  transition: all var(--transition-speed) ease;
+  font-weight: 500;
+  transition: all 0.2s ease;
 }
 
 .backButton:hover {
-  background-color: var(--color-primary);
-  color: white;
+  background: #cbd5e1;
 }
 
 .backButton:active {
-  background-color: var(--color-primary-hover);
+  background: #94a3b8;
 }
 
 .roomInfo {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   font-size: 13px;
+  color: #64748b;
   padding: 4px 10px;
-  background-color: var(--color-background-section);
-  border-radius: var(--border-radius-md);
-  color: var(--color-text-secondary);
+  background: #f1f5f9;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
 }
 
 .roomInfo strong {
-  color: var(--color-text-primary);
-  font-weight: 500;
+  color: #333333;
 }
 
 .container {

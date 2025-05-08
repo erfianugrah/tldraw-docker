@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import styles from "./styles/RoomManager.module.css"
+import "./RoomManager.css"
 
 const RoomManager = ({ onEnterRoom }) => {
   const [newRoomName, setNewRoomName] = useState("")
@@ -61,22 +61,22 @@ const RoomManager = ({ onEnterRoom }) => {
   }
 
   return (
-    <main className={styles.roomManager} role="main">
-      <div className={styles.container}>
-        <h1 className={styles.title}>TLDraw Room Management</h1>
+    <main className="room-manager" role="main">
+      <div className="room-manager-container">
+        <h1>TLDraw Room Management</h1>
 
-        <section className={styles.section} aria-labelledby="quick-actions-title">
-          <h2 id="quick-actions-title" className={styles.sectionTitle}>Quick Access</h2>
-          <div className={styles.buttonGroup}>
+        <section className="quick-actions" aria-labelledby="quick-actions-title">
+          <h2 id="quick-actions-title">Quick Access</h2>
+          <div className="button-group">
             <button
-              className={styles.primaryButton}
+              className="primary-button"
               onClick={() => onEnterRoom(generateRandomRoom())}
               aria-label="Create room with random name"
             >
               Create Random Room
             </button>
             <button
-              className={styles.secondaryButton}
+              className="secondary-button"
               onClick={() => {
                 const roomName = prompt("Enter room name:")
                 if (roomName) {
@@ -98,7 +98,7 @@ const RoomManager = ({ onEnterRoom }) => {
             </button>
           </div>
 
-          <div className={styles.infoBox} role="note">
+          <div className="info-box" role="note">
             <p>You can also access any room directly by adding the room name to the URL:</p>
             <code aria-label="URL format example">
               {window.location.origin}/<strong>your-room-name</strong>
@@ -106,17 +106,16 @@ const RoomManager = ({ onEnterRoom }) => {
           </div>
         </section>
 
-        <section className={styles.section} aria-labelledby="create-room-title">
-          <h2 id="create-room-title" className={styles.sectionTitle}>Create New Room</h2>
-          <form className={styles.form} onSubmit={handleCreateRoom}>
-            <div className={styles.formGroup}>
+        <section className="create-room" aria-labelledby="create-room-title">
+          <h2 id="create-room-title">Create New Room</h2>
+          <form onSubmit={handleCreateRoom}>
+            <div className="form-group">
               <label htmlFor="room-name" className="sr-only">
                 Room name
               </label>
               <input
                 id="room-name"
                 type="text"
-                className={styles.formControl}
                 value={newRoomName}
                 onChange={(e) => setNewRoomName(e.target.value)}
                 placeholder="Enter room name (e.g., team-meeting)"
@@ -124,22 +123,22 @@ const RoomManager = ({ onEnterRoom }) => {
                 aria-describedby="room-name-help"
               />
             </div>
-            <button type="submit" className={styles.primaryButton}>
+            <button type="submit" className="primary-button">
               Create Room
             </button>
           </form>
-          <p id="room-name-help" className={styles.helpText}>
+          <p id="room-name-help" className="help-text">
             Room names should use lowercase letters, numbers, and hyphens. Special characters will be converted to
             hyphens.
           </p>
         </section>
 
         {roomHistory.length > 0 && (
-          <section className={styles.section} aria-labelledby="history-title">
-            <div className={styles.headerWithAction}>
-              <h2 id="history-title" className={styles.sectionTitle}>Recently Visited Rooms</h2>
+          <section className="room-history" aria-labelledby="history-title">
+            <div className="header-with-action">
+              <h2 id="history-title">Recently Visited Rooms</h2>
               <button
-                className={styles.textButton}
+                className="text-button"
                 onClick={() => {
                   if (window.confirm("Clear your room history? This will not delete any rooms.")) {
                     localStorage.removeItem("tldraw-room-history")
@@ -152,21 +151,21 @@ const RoomManager = ({ onEnterRoom }) => {
               </button>
             </div>
 
-            <ul className={styles.roomList} role="list">
+            <ul className="room-list" role="list">
               {roomHistory.map((roomId) => (
-                <li key={roomId} className={styles.roomItem}>
+                <li key={roomId} className="room-item">
                   <button
-                    className={styles.roomButton}
+                    className="room-button"
                     onClick={() => onEnterRoom(roomId)}
                     aria-label={`Enter room ${roomId}`}
                   >
-                    <span className={styles.roomName}>{roomId}</span>
-                    <span className={styles.roomAction} aria-hidden="true">
+                    <span className="room-name">{roomId}</span>
+                    <span className="room-action" aria-hidden="true">
                       Enter Room
                     </span>
                   </button>
                   <button
-                    className={styles.removeButton}
+                    className="remove-button"
                     onClick={(e) => handleRemoveFromHistory(roomId, e)}
                     aria-label={`Remove ${roomId} from history`}
                   >
@@ -178,7 +177,7 @@ const RoomManager = ({ onEnterRoom }) => {
           </section>
         )}
 
-        <footer className={styles.footer}>
+        <footer className="footer">
           <p>
             <strong>Note:</strong> Drawing changes are automatically saved and synced in real-time with other users in the same room.
           </p>

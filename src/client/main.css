@@ -1,0 +1,73 @@
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: none;
+  background-color: #f5f7fa;
+  color: #333;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+/* Make sure TLDraw's UI is visible */
+.tldraw {
+  width: 100%;
+  height: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c8c8c8;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Chrome-specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+
+  html,
+  body,
+  #root {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .tldraw-canvas {
+    transform: scale(1);
+  }
+
+  .tldraw-container {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}

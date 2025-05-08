@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react"
 import TLDrawComponent from "./TLDrawComponent.jsx"
 import RoomManager from "./RoomManager.jsx"
-import styles from "./styles/App.module.css"
 import "tldraw/tldraw.css"
 
 function App() {
@@ -105,16 +104,16 @@ function App() {
   }
 
   return (
-    <main className={styles.mainContainer} role="application" aria-label="Drawing Board">
+    <main className="relative w-screen h-screen" role="application" aria-label="Drawing Board">
       {connectionError && (
         <div
           role="alert"
-          className={styles.alertBanner}
+          className="error-banner"
         >
           {connectionError}
           <button
             onClick={() => window.location.reload()}
-            className={styles.retryButton}
+            className="retry-button"
             aria-label="Retry connection"
           >
             Retry
@@ -122,7 +121,7 @@ function App() {
         </div>
       )}
 
-      <div className={styles.mainContent}>
+      <div className="fixed inset-0">
         <TLDrawComponent
           roomId={currentRoom}
           onConnectionStatusChange={handleConnectionStatusChange}
@@ -133,14 +132,14 @@ function App() {
 
       {isLoading && (
         <div
-          className={styles.loadingOverlay}
+          className="loading-overlay"
           role="progressbar"
           aria-valuetext="Loading drawing board"
           aria-busy="true"
         >
-          <div className={styles.loadingCard}>
-            <h2 className={styles.loadingTitle}>Connecting to Room...</h2>
-            <p className={styles.loadingText}>Setting up drawing board...</p>
+          <div className="loading-card">
+            <h2 className="loading-title">Connecting to Room...</h2>
+            <p className="loading-text">Setting up drawing board...</p>
           </div>
         </div>
       )}
