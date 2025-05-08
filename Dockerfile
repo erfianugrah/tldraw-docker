@@ -24,12 +24,16 @@ COPY --from=builder /app/package*.json ./
 RUN npm ci --production && \
     npm cache clean --force
 
-# Create directories for volumes
+# Create directories for volumes with proper permissions
 RUN mkdir -p ./.rooms ./.assets && \
-    chown -R appuser:appgroup ./.rooms ./.assets
+    chown -R appuser:appgroup ./.rooms ./.assets && \
+    chmod 777 ./.rooms ./.assets
 
-# Set permissions
+# Set permissions for app directory
 RUN chown -R appuser:appgroup /app
+
+# Install required polyfill for getRandomValues
+RUN echo 'import { webcrypto } from "node:crypto"; globalThis.crypto = webcrypto;' > /app/server/polyfill.js
 
 # Switch to non-root user
 USER appuser
@@ -48,5 +52,5 @@ EXPOSE 5858
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT}/health || exit 1
 
-# Start app
-CMD ["node", "server/server.node.js"]
+# Start app with polyfill
+CMD ["node", "--import", "/app/server/polyfill.js", "server/server.node.js"]

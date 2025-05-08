@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import TLDrawComponent from "./TLDrawComponent.jsx"
 import RoomManager from "./RoomManager.jsx"
+import styles from "./styles/App.module.css"
 import "tldraw/tldraw.css"
 
 function App() {
@@ -104,16 +105,16 @@ function App() {
   }
 
   return (
-    <main className="relative w-screen h-screen" role="application" aria-label="Drawing Board">
+    <main className={styles.mainContainer} role="application" aria-label="Drawing Board">
       {connectionError && (
         <div
           role="alert"
-          className="fixed top-0 left-0 right-0 p-3 bg-red-50 text-red-700 border-b border-red-200 text-sm text-center z-[9999]"
+          className={styles.alertBanner}
         >
           {connectionError}
           <button
             onClick={() => window.location.reload()}
-            className="ml-3 bg-red-500 text-white border-none rounded px-2 py-1 text-xs cursor-pointer hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+            className={styles.retryButton}
             aria-label="Retry connection"
           >
             Retry
@@ -121,7 +122,7 @@ function App() {
         </div>
       )}
 
-      <div className="fixed inset-0">
+      <div className={styles.mainContent}>
         <TLDrawComponent
           roomId={currentRoom}
           onConnectionStatusChange={handleConnectionStatusChange}
@@ -132,14 +133,14 @@ function App() {
 
       {isLoading && (
         <div
-          className="fixed inset-0 bg-white/80 flex items-center justify-center z-[9999]"
+          className={styles.loadingOverlay}
           role="progressbar"
           aria-valuetext="Loading drawing board"
           aria-busy="true"
         >
-          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
-            <h2 className="text-lg font-bold mb-3">Connecting to Room...</h2>
-            <p className="text-gray-600">Setting up drawing board...</p>
+          <div className={styles.loadingCard}>
+            <h2 className={styles.loadingTitle}>Connecting to Room...</h2>
+            <p className={styles.loadingText}>Setting up drawing board...</p>
           </div>
         </div>
       )}
