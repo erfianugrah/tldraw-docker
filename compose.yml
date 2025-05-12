@@ -1,9 +1,7 @@
 version: '3.9'
 services:
   tldraw:
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: docker.io/erfianugrah/tldraw:v1.1.8
     container_name: tldraw
     restart: unless-stopped
     volumes:
@@ -28,8 +26,16 @@ services:
 volumes:
   tldraw_rooms:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/.rooms
   tldraw_assets:
     driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/.assets
 
 networks:
   tldraw:

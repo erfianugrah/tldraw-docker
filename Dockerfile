@@ -27,7 +27,7 @@ RUN npm ci --production && \
 # Create directories for volumes with proper permissions
 RUN mkdir -p ./.rooms ./.assets && \
     chown -R appuser:appgroup ./.rooms ./.assets && \
-    chmod 777 ./.rooms ./.assets
+    chmod -R 777 ./.rooms ./.assets
 
 # Set permissions for app directory
 RUN chown -R appuser:appgroup /app
