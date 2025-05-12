@@ -21,12 +21,12 @@ services:
       start_period: 5s
     networks:
       tldraw:
-        ipv4_address: 172.19.1.2
+        ipv4_address: 172.40.1.2
 
 networks:
   tldraw:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.19.1.0/24
-          gateway: 172.19.1.1
+        - subnet: 172.40.1.0/24
+          gateway: 172.40.1.1
