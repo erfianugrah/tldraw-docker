@@ -5,10 +5,10 @@ services:
     container_name: tldraw
     restart: unless-stopped
     volumes:
-      - tldraw_rooms:/app/.rooms  # Named volume for room data
-      - tldraw_assets:/app/.assets  # Named volume for assets
-    ports:
-      - 8000:5858  # Expose HTTP port
+      - /home/erfi/docker-volumes/tldraw/data/rooms:/app/.rooms  # Named volume for room data
+      - /home/erfi/docker-volumes/tldraw/data/assets:/app/.assets  # Named volume for assets
+    expose: 
+      - 5858  # Expose HTTP port
     environment:
       - TZ=Europe/Amsterdam  # Set your preferred timezone
       - NODE_ENV=production
@@ -22,20 +22,6 @@ services:
     networks:
       tldraw:
         ipv4_address: 172.19.1.2
-
-volumes:
-  tldraw_rooms:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/.rooms
-  tldraw_assets:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: ${PWD}/.assets
 
 networks:
   tldraw:
