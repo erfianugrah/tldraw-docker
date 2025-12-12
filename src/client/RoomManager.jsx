@@ -1,64 +1,69 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import "./RoomManager.css"
+import { useState, useEffect } from "react";
+import { sanitizeRoomName, generateRandomRoomName } from "./utils/roomUtils";
+import { InputModal } from "./components/InputModal";
+import { ConfirmModal } from "./components/ConfirmModal";
+import "./RoomManager.css";
 
 const RoomManager = ({ onEnterRoom }) => {
-  const [newRoomName, setNewRoomName] = useState("")
-  const [roomHistory, setRoomHistory] = useState([])
+  const [newRoomName, setNewRoomName] = useState("");
+  const [roomHistory, setRoomHistory] = useState([]);
+  const [showInputModal, setShowInputModal] = useState(false);
+  const [showClearHistoryModal, setShowClearHistoryModal] = useState(false);
+  const [roomToRemove, setRoomToRemove] = useState(null);
 
   useEffect(() => {
     try {
-      const savedRooms = localStorage.getItem("tldraw-room-history")
+      const savedRooms = localStorage.getItem("tldraw-room-history");
       if (savedRooms) {
-        setRoomHistory(JSON.parse(savedRooms))
+        setRoomHistory(JSON.parse(savedRooms));
       }
     } catch (error) {
-      console.error("Failed to load room history:", error)
+      console.error("Failed to load room history:", error);
     }
-  }, [])
+  }, []);
 
   const handleCreateRoom = (e) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    if (!newRoomName.trim()) return
+    if (!newRoomName.trim()) return;
 
-    const sanitizedName = newRoomName
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "")
+    const sanitizedName = sanitizeRoomName(newRoomName);
 
     if (sanitizedName) {
-      onEnterRoom(sanitizedName)
+      onEnterRoom(sanitizedName);
     }
-  }
+  };
 
   const handleRemoveFromHistory = (roomId, e) => {
-    e.stopPropagation()
+    e.stopPropagation();
+    setRoomToRemove(roomId);
+  };
 
-    const confirmed = window.confirm(
-      `Remove "${roomId}" from your history? This won't delete the room, just remove it from your history list.`,
-    )
-
-    if (confirmed) {
-      const updatedHistory = roomHistory.filter((id) => id !== roomId)
-      setRoomHistory(updatedHistory)
-      localStorage.setItem("tldraw-room-history", JSON.stringify(updatedHistory))
+  const confirmRemoveFromHistory = () => {
+    if (roomToRemove) {
+      const updatedHistory = roomHistory.filter((id) => id !== roomToRemove);
+      setRoomHistory(updatedHistory);
+      localStorage.setItem("tldraw-room-history", JSON.stringify(updatedHistory));
     }
-  }
+    setRoomToRemove(null);
+  };
 
-  const generateRandomRoom = () => {
-    const adjectives = ["happy", "clever", "swift", "brave", "calm", "eager", "fair", "kind"]
-    const nouns = ["lion", "tiger", "river", "mountain", "forest", "ocean", "star", "moon"]
+  const handleEnterSpecificRoom = (roomName) => {
+    const sanitizedName = sanitizeRoomName(roomName);
 
-    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)]
-    const noun = nouns[Math.floor(Math.random() * nouns.length)]
-    const number = Math.floor(Math.random() * 1000)
+    if (sanitizedName) {
+      onEnterRoom(sanitizedName);
+    }
+    setShowInputModal(false);
+  };
 
-    return `${adjective}-${noun}-${number}`
-  }
+  const handleClearHistory = () => {
+    localStorage.removeItem("tldraw-room-history");
+    setRoomHistory([]);
+    setShowClearHistoryModal(false);
+  };
 
   return (
     <main className="room-manager" role="main">
@@ -70,28 +75,14 @@ const RoomManager = ({ onEnterRoom }) => {
           <div className="button-group">
             <button
               className="primary-button"
-              onClick={() => onEnterRoom(generateRandomRoom())}
+              onClick={() => onEnterRoom(generateRandomRoomName())}
               aria-label="Create room with random name"
             >
               Create Random Room
             </button>
             <button
               className="secondary-button"
-              onClick={() => {
-                const roomName = prompt("Enter room name:")
-                if (roomName) {
-                  const sanitizedName = roomName
-                    .trim()
-                    .toLowerCase()
-                    .replace(/[^a-z0-9-]/g, "-")
-                    .replace(/-+/g, "-")
-                    .replace(/^-|-$/g, "")
-
-                  if (sanitizedName) {
-                    onEnterRoom(sanitizedName)
-                  }
-                }
-              }}
+              onClick={() => setShowInputModal(true)}
               aria-label="Enter specific room name"
             >
               Enter Specific Room
@@ -128,8 +119,8 @@ const RoomManager = ({ onEnterRoom }) => {
             </button>
           </form>
           <p id="room-name-help" className="help-text">
-            Room names should use lowercase letters, numbers, and hyphens. Special characters will be converted to
-            hyphens.
+            Room names should use lowercase letters, numbers, and hyphens. Special characters will
+            be converted to hyphens.
           </p>
         </section>
 
@@ -139,12 +130,7 @@ const RoomManager = ({ onEnterRoom }) => {
               <h2 id="history-title">Recently Visited Rooms</h2>
               <button
                 className="text-button"
-                onClick={() => {
-                  if (window.confirm("Clear your room history? This will not delete any rooms.")) {
-                    localStorage.removeItem("tldraw-room-history")
-                    setRoomHistory([])
-                  }
-                }}
+                onClick={() => setShowClearHistoryModal(true)}
                 aria-label="Clear room history"
               >
                 Clear History
@@ -179,12 +165,46 @@ const RoomManager = ({ onEnterRoom }) => {
 
         <footer className="footer">
           <p>
-            <strong>Note:</strong> Drawing changes are automatically saved and synced in real-time with other users in the same room.
+            <strong>Note:</strong> Drawing changes are automatically saved and synced in real-time
+            with other users in the same room.
           </p>
         </footer>
       </div>
-    </main>
-  )
-}
 
-export default RoomManager
+      <InputModal
+        isOpen={showInputModal}
+        onClose={() => setShowInputModal(false)}
+        onConfirm={handleEnterSpecificRoom}
+        title="Enter Room Name"
+        placeholder="e.g., team-meeting"
+        helpText="Room names should use lowercase letters, numbers, and hyphens. Special characters will be converted to hyphens."
+      />
+
+      <ConfirmModal
+        isOpen={showClearHistoryModal}
+        onClose={() => setShowClearHistoryModal(false)}
+        onConfirm={handleClearHistory}
+        title="Clear Room History?"
+      >
+        <p>
+          This will clear your room history. This will not delete any rooms, just remove them from
+          your history list.
+        </p>
+      </ConfirmModal>
+
+      <ConfirmModal
+        isOpen={!!roomToRemove}
+        onClose={() => setRoomToRemove(null)}
+        onConfirm={confirmRemoveFromHistory}
+        title="Remove from History?"
+      >
+        <p>
+          Remove <strong>{roomToRemove}</strong> from your history?
+        </p>
+        <p>This won&apos;t delete the room, just remove it from your history list.</p>
+      </ConfirmModal>
+    </main>
+  );
+};
+
+export default RoomManager;
