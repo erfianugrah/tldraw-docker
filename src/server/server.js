@@ -79,10 +79,8 @@ async function loadAsset(id) {
 async function unfurl(url) {
   try {
     console.log(`Unfurling URL: ${url}`);
-    const { title, description, open_graph, twitter_card, favicon } =
-      await _unfurl.unfurl(url);
-    const image = open_graph?.images?.[0]?.url ||
-      twitter_card?.images?.[0]?.url;
+    const { title, description, open_graph, twitter_card, favicon } = await _unfurl.unfurl(url);
+    const image = open_graph?.images?.[0]?.url || twitter_card?.images?.[0]?.url;
     console.log(`Successfully unfurled URL: ${url}`);
     return { title, description, image, favicon };
   } catch (error) {
@@ -112,9 +110,7 @@ async function makeOrLoadRoom(roomId) {
         room: new TLSocketRoom({
           initialSnapshot,
           onSessionRemoved(room, args) {
-            console.log(
-              `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}`,
-            );
+            console.log(`Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}`);
             if (args.numSessionsRemaining === 0) {
               console.log(`No clients left, closing room: ${roomId}`);
               room.close();
@@ -161,11 +157,13 @@ setInterval(() => {
 
 // Express setup
 const app = express();
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
-}));
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 
 // Add basic middlewares
 app.use(express.json());
@@ -262,14 +260,15 @@ wss.on("connection", async (ws, req) => {
     const connectIndex = urlParts.indexOf("connect");
 
     // Extract roomId from the path
-    const roomId = connectIndex >= 0 && urlParts.length > connectIndex + 1
-      ? urlParts[connectIndex + 1].split("?")[0]
-      : "default-room";
+    const roomId =
+      connectIndex >= 0 && urlParts.length > connectIndex + 1
+        ? urlParts[connectIndex + 1].split("?")[0]
+        : "default-room";
 
     // Extract sessionId from query params
     const sessionId = new URL(
       req.url,
-      `http://${req.headers.host || "localhost"}`,
+      `http://${req.headers.host || "localhost"}`
     ).searchParams.get("sessionId");
 
     console.log(`Room ID: ${roomId}, Session ID: ${sessionId}`);
@@ -290,9 +289,7 @@ wss.on("connection", async (ws, req) => {
           send: (data) => {
             if (ws.readyState === ws.OPEN) {
               try {
-                const message = typeof data === "string"
-                  ? data
-                  : JSON.stringify(data);
+                const message = typeof data === "string" ? data : JSON.stringify(data);
                 ws.send(message);
               } catch (error) {
                 console.error("Error sending message:", error);
@@ -320,9 +317,7 @@ wss.on("connection", async (ws, req) => {
 
       ws.on("close", (code, reason) => {
         console.log(
-          `WebSocket connection closed: code=${code}, reason=${
-            reason || "No reason provided"
-          }`,
+          `WebSocket connection closed: code=${code}, reason=${reason || "No reason provided"}`
         );
         room.handleSocketClose(sessionId);
       });

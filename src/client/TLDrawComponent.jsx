@@ -1,62 +1,63 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { useSync } from "@tldraw/sync"
-import { AssetRecordType, getHashForString, Tldraw, uniqueId } from "tldraw"
-import { ArrowLeft, Users } from "lucide-react"
-import { ConfirmModal } from "./components/ConfirmModal"
+import React, { useState } from "react";
+import { useSync } from "@tldraw/sync";
+import { AssetRecordType, getHashForString, Tldraw, uniqueId } from "tldraw";
+import { ArrowLeft, Users } from "lucide-react";
+import { ConfirmModal } from "./components/ConfirmModal";
 
 const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigateToRooms }) => {
-  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false)
+  const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
-  const wsProtocol = typeof window !== "undefined" && window.location.protocol === "https:" ? "wss:" : "ws:"
-  const workerUrl = typeof window !== "undefined" ? `${wsProtocol}//${window.location.host}` : ""
+  const wsProtocol =
+    typeof window !== "undefined" && window.location.protocol === "https:" ? "wss:" : "ws:";
+  const workerUrl = typeof window !== "undefined" ? `${wsProtocol}//${window.location.host}` : "";
 
   const multiplayerAssets = React.useMemo(
     () => ({
       async upload(_asset, file) {
-        console.log("Uploading asset:", file.name)
-        const id = uniqueId()
-        const objectName = `${id}-${file.name}`
-        const url = `${workerUrl}/uploads/${encodeURIComponent(objectName)}`
-        const response = await fetch(url, { method: "PUT", body: file })
-        if (!response.ok) throw new Error(`Failed to upload asset: ${response.statusText}`)
-        console.log("Asset uploaded successfully:", url)
-        return url
+        console.log("Uploading asset:", file.name);
+        const id = uniqueId();
+        const objectName = `${id}-${file.name}`;
+        const url = `${workerUrl}/uploads/${encodeURIComponent(objectName)}`;
+        const response = await fetch(url, { method: "PUT", body: file });
+        if (!response.ok) throw new Error(`Failed to upload asset: ${response.statusText}`);
+        console.log("Asset uploaded successfully:", url);
+        return url;
       },
       resolve(asset) {
-        return asset.props.src
+        return asset.props.src;
       },
     }),
-    [workerUrl],
-  )
+    [workerUrl]
+  );
 
   const syncConfig = React.useMemo(
     () => ({
       uri: `${workerUrl}/connect/${roomId}`,
       assets: multiplayerAssets,
       onConnect: () => {
-        console.log("Connected to room:", roomId)
-        onConnectionStatusChange?.("connected")
-        onLoaded?.()
+        console.log("Connected to room:", roomId);
+        onConnectionStatusChange?.("connected");
+        onLoaded?.();
       },
       onDisconnect: () => {
-        console.log("Disconnected from room")
-        onConnectionStatusChange?.("disconnected")
+        console.log("Disconnected from room");
+        onConnectionStatusChange?.("disconnected");
       },
       onError: (error) => {
-        console.error("Connection error:", error)
-        onConnectionStatusChange?.("error")
+        console.error("Connection error:", error);
+        onConnectionStatusChange?.("error");
       },
     }),
-    [workerUrl, roomId, multiplayerAssets, onConnectionStatusChange, onLoaded],
-  )
+    [workerUrl, roomId, multiplayerAssets, onConnectionStatusChange, onLoaded]
+  );
 
-  const store = useSync(syncConfig)
+  const store = useSync(syncConfig);
 
   const handleMount = React.useCallback(
     (editor) => {
-      console.log("Editor mounted")
+      console.log("Editor mounted");
       editor.registerExternalAssetHandler("url", async ({ url }) => {
         const asset = {
           id: AssetRecordType.createId(getHashForString(url)),
@@ -70,25 +71,25 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
             favicon: "",
             title: "",
           },
-        }
+        };
         try {
-          const response = await fetch(`${workerUrl}/unfurl?url=${encodeURIComponent(url)}`)
+          const response = await fetch(`${workerUrl}/unfurl?url=${encodeURIComponent(url)}`);
           if (response.ok) {
-            const data = await response.json()
-            asset.props.description = data?.description || ""
-            asset.props.image = data?.image || ""
-            asset.props.favicon = data?.favicon || ""
-            asset.props.title = data?.title || ""
+            const data = await response.json();
+            asset.props.description = data?.description || "";
+            asset.props.image = data?.image || "";
+            asset.props.favicon = data?.favicon || "";
+            asset.props.title = data?.title || "";
           }
         } catch (e) {
-          console.error("Error unfurling URL:", e)
+          console.error("Error unfurling URL:", e);
         }
-        return asset
-      })
-      onLoaded?.()
+        return asset;
+      });
+      onLoaded?.();
     },
-    [workerUrl, onLoaded],
-  )
+    [workerUrl, onLoaded]
+  );
 
   return (
     <div
@@ -203,8 +204,8 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
         isOpen={showLeaveConfirm}
         onClose={() => setShowLeaveConfirm(false)}
         onConfirm={() => {
-          setShowLeaveConfirm(false)
-          onNavigateToRooms?.()
+          setShowLeaveConfirm(false);
+          onNavigateToRooms?.();
         }}
         title="Leave Room?"
       >
@@ -215,7 +216,7 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
         </p>
       </ConfirmModal>
     </div>
-  )
-}
+  );
+};
 
-export default TLDrawComponent
+export default TLDrawComponent;

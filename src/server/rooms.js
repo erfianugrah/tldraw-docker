@@ -1,9 +1,5 @@
 import { TLSocketRoom } from "@tldraw/sync-core";
-import {
-  createTLSchema,
-  defaultBindingSchemas,
-  defaultShapeSchemas,
-} from "@tldraw/tlschema";
+import { createTLSchema, defaultBindingSchemas, defaultShapeSchemas } from "@tldraw/tlschema";
 import { mkdir, readFile, writeFile } from "fs/promises";
 import { join } from "path";
 import { ROOMS_DIR, ROOM_PERSISTENCE_INTERVAL_MS } from "./config.js";
@@ -77,7 +73,7 @@ export async function makeOrLoadRoom(roomId) {
         initialSnapshot,
         onSessionRemoved(room, args) {
           console.log(
-            `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}, remainingSessions=${args.numSessionsRemaining}`,
+            `Client disconnected: sessionId=${args.sessionId}, roomId=${roomId}, remainingSessions=${args.numSessionsRemaining}`
           );
           if (args.numSessionsRemaining === 0) {
             console.log(`No clients left, closing room: ${roomId}`);
@@ -93,7 +89,7 @@ export async function makeOrLoadRoom(roomId) {
           }
         },
       });
-      
+
       // Now create the roomState object
       const roomState = {
         needsPersist: false,
@@ -119,9 +115,7 @@ export async function makeOrLoadRoom(roomId) {
   const roomState = rooms.get(roomId);
 
   if (!roomState) {
-    console.error(
-      `Room state not found for room: ${roomId} after mutex operation`,
-    );
+    console.error(`Room state not found for room: ${roomId} after mutex operation`);
     throw new Error(`Room state not found for room: ${roomId}`);
   }
 

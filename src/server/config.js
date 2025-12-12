@@ -11,7 +11,8 @@ export const ROOMS_DIR = process.env.ROOMS_DIR || resolve(BASE_DIR, "./.rooms");
 export const ASSETS_DIR = process.env.ASSETS_DIR || resolve(BASE_DIR, "./.assets");
 
 // Time intervals
-export const ROOM_PERSISTENCE_INTERVAL_MS = parseInt(process.env.ROOM_PERSISTENCE_INTERVAL_MS, 10) || 2000;
+export const ROOM_PERSISTENCE_INTERVAL_MS =
+  parseInt(process.env.ROOM_PERSISTENCE_INTERVAL_MS, 10) || 2000;
 
 // Logging
 export const LOG_LEVEL = process.env.LOG_LEVEL || (IS_PRODUCTION ? "info" : "debug");

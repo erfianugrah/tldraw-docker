@@ -65,13 +65,13 @@
 
 .primaryButton {
   composes: button;
-  background: #2F80ED;
+  background: #2f80ed;
   color: white;
   border: none;
 }
 
 .primaryButton:hover {
-  background: #2B73D5;
+  background: #2b73d5;
 }
 
 .secondaryButton {
@@ -87,6 +87,6 @@
 }
 
 .button:focus {
-  outline: 2px solid #2F80ED;
+  outline: 2px solid #2f80ed;
   outline-offset: 2px;
 }

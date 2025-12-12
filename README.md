@@ -57,12 +57,14 @@ tldraw-multiplayer/
 #### Using Docker Compose (Recommended)
 
 1. Clone the repository:
+
    ```bash
    git clone <repository-url>
    cd tldraw-docker
    ```
 
 2. Start the application with Docker Compose:
+
    ```bash
    docker compose up -d
    ```
@@ -75,11 +77,13 @@ tldraw-multiplayer/
 #### Local Development
 
 1. Install dependencies:
+
    ```bash
    npm install
    ```
 
 2. Start the development server:
+
    ```bash
    npm run dev
    ```
@@ -93,16 +97,16 @@ tldraw-multiplayer/
 
 The application is configured using environment variables that can be set in the `compose.yml` file:
 
-| Variable | Description | Default |
-|----------|-------------|---------|
-| `PORT` | Server port | `5858` |
-| `NODE_ENV` | Environment (`development` or `production`) | `production` |
-| `BASE_DIR` | Base directory for data storage | `.` |
-| `ROOMS_DIR` | Directory for room data | `./.rooms` |
-| `ASSETS_DIR` | Directory for asset storage | `./.assets` |
-| `ROOM_PERSISTENCE_INTERVAL_MS` | Interval for saving room data | `2000` |
-| `CORS_ENABLED` | Enable CORS | `true` |
-| `CORS_ORIGIN` | CORS origin | `*` |
+| Variable                       | Description                                 | Default      |
+| ------------------------------ | ------------------------------------------- | ------------ |
+| `PORT`                         | Server port                                 | `5858`       |
+| `NODE_ENV`                     | Environment (`development` or `production`) | `production` |
+| `BASE_DIR`                     | Base directory for data storage             | `.`          |
+| `ROOMS_DIR`                    | Directory for room data                     | `./.rooms`   |
+| `ASSETS_DIR`                   | Directory for asset storage                 | `./.assets`  |
+| `ROOM_PERSISTENCE_INTERVAL_MS` | Interval for saving room data               | `2000`       |
+| `CORS_ENABLED`                 | Enable CORS                                 | `true`       |
+| `CORS_ORIGIN`                  | CORS origin                                 | `*`          |
 
 ## Data Persistence
 
@@ -116,12 +120,14 @@ The application uses Docker volumes for data persistence:
 The project includes several development tools:
 
 - **Linting**: ESLint for code quality
+
   ```bash
   npm run lint      # Check for issues
   npm run lint:fix  # Fix issues automatically
   ```
 
 - **Formatting**: Prettier for consistent code style
+
   ```bash
   npm run format       # Format all files
   npm run format:check # Check formatting

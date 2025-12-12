@@ -1,60 +1,59 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
-@import url('tldraw/tldraw.css');
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap");
+@import url("tldraw/tldraw.css");
 
 html,
 body {
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: 100%;
-	overflow: hidden;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
-	font-family: 'Inter', sans-serif;
-	overscroll-behavior: none;
-	/* Force hardware acceleration for Chrome */
-	transform: translateZ(0);
-	/* Ensure proper sizing in Chrome */
-	box-sizing: border-box;
+  font-family: "Inter", sans-serif;
+  overscroll-behavior: none;
+  /* Force hardware acceleration for Chrome */
+  transform: translateZ(0);
+  /* Ensure proper sizing in Chrome */
+  box-sizing: border-box;
 }
 
 #root {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 /* Chrome-specific fixes */
 @media screen and (-webkit-min-device-pixel-ratio: 0) and (min-resolution: 0.001dpcm) {
+  /* Target Chrome and Safari */
+  .tl-canvas {
+    transform: scale(1);
+    /* Reset any unintended scaling */
+  }
 
-	/* Target Chrome and Safari */
-	.tl-canvas {
-		transform: scale(1);
-		/* Reset any unintended scaling */
-	}
+  .tl-container {
+    max-width: 100%;
+    max-height: 100%;
+  }
 
-	.tl-container {
-		max-width: 100%;
-		max-height: 100%;
-	}
-
-	/* Fix for toolbar size */
-	.tl-toolbar {
-		transform: scale(1);
-	}
+  /* Fix for toolbar size */
+  .tl-toolbar {
+    transform: scale(1);
+  }
 }
 
 /* Fix for toolbar button spacing */
 .tl-toolbar__buttons {
-	display: flex;
-	align-items: center;
-	justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Ensure SVG elements scale properly */
 svg {
-	width: 100%;
-	height: 100%;
-	max-width: 100%;
-	max-height: 100%;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
 }

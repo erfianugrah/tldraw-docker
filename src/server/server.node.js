@@ -15,11 +15,13 @@ const app = express();
 
 // Configure middleware
 if (CORS_ENABLED) {
-  app.use(cors({
-    origin: CORS_ORIGIN,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }));
+  app.use(
+    cors({
+      origin: CORS_ORIGIN,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  );
 }
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -138,8 +140,7 @@ const wss = new WebSocketServer({ server });
 wss.on("connection", (ws, req) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const roomId = url.pathname.split("/").pop();
-  const userId = url.searchParams.get("userId") ||
-    url.searchParams.get("sessionId");
+  const userId = url.searchParams.get("userId") || url.searchParams.get("sessionId");
 
   if (!roomId || !userId) {
     console.error("[ERROR] Invalid WebSocket connection");
@@ -149,14 +150,14 @@ wss.on("connection", (ws, req) => {
 
   console.log(`[INFO] User ${userId} connected to room ${roomId}`);
 
-  makeOrLoadRoom(roomId).then((room) => {
-    room.handleSocketConnect({ sessionId: userId, socket: ws });
-  }).catch((err) => {
-    console.error(
-      `[ERROR] Failed to connect to room ${roomId}: ${err.message}`,
-    );
-    ws.close(1011, "Error connecting to room");
-  });
+  makeOrLoadRoom(roomId)
+    .then((room) => {
+      room.handleSocketConnect({ sessionId: userId, socket: ws });
+    })
+    .catch((err) => {
+      console.error(`[ERROR] Failed to connect to room ${roomId}: ${err.message}`);
+      ws.close(1011, "Error connecting to room");
+    });
 });
 
 server.listen(PORT, () => {
