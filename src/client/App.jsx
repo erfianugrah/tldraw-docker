@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import TLDrawComponent from "./TLDrawComponent.jsx";
 import RoomManager from "./RoomManager.jsx";
 import "tldraw/tldraw.css";
@@ -44,15 +44,15 @@ function App() {
     setCurrentMode("drawing");
   };
 
-  const handleReturnToRooms = () => {
+  const handleReturnToRooms = useCallback(() => {
     setCurrentMode("management");
     setCurrentRoom(null);
     setConnectionStatus("disconnected");
     setConnectionError(null);
     window.history.pushState({}, "", "/");
-  };
+  }, []);
 
-  const handleConnectionStatusChange = (status) => {
+  const handleConnectionStatusChange = useCallback((status) => {
     console.log("Connection status changed:", status);
     setConnectionStatus(status);
 
@@ -64,16 +64,12 @@ function App() {
       setConnectionError(null);
     }
 
-    if (isLoading) {
-      setIsLoading(false);
-    }
-  };
+    setIsLoading(false);
+  }, []);
 
-  const handleLoaded = () => {
-    if (isLoading) {
-      setIsLoading(false);
-    }
-  };
+  const handleLoaded = useCallback(() => {
+    setIsLoading(false);
+  }, []);
 
   useEffect(() => {
     if (currentMode !== "drawing") return;

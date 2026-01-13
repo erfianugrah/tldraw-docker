@@ -39,7 +39,6 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
       onConnect: () => {
         console.log("Connected to room:", roomId);
         onConnectionStatusChange?.("connected");
-        onLoaded?.();
       },
       onDisconnect: () => {
         console.log("Disconnected from room");
@@ -50,7 +49,7 @@ const TLDrawComponent = ({ roomId, onConnectionStatusChange, onLoaded, onNavigat
         onConnectionStatusChange?.("error");
       },
     }),
-    [workerUrl, roomId, multiplayerAssets, onConnectionStatusChange, onLoaded]
+    [workerUrl, roomId, multiplayerAssets, onConnectionStatusChange]
   );
 
   const store = useSync(syncConfig);
